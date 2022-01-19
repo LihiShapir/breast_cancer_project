@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 14 09:30:44 2022
+
+@author: Student
+"""
+
+from imutils import paths
+import random, shutil, os
+
+import os
+
+INPUT_DATASET = r"C:\Users\Student\OneDrive\Downloads\archive (4)"
+
+BASE_PATH = r"C:\Users\Student\OneDrive\Downloads\data"
+TRAIN_PATH = os.path.sep.join([BASE_PATH, "training"])
+VAL_PATH = os.path.sep.join([BASE_PATH, "validation"])
+TEST_PATH = os.path.sep.join([BASE_PATH, "testing"])
+
+TRAIN_SPLIT = 0.8
+VAL_SPLIT = 0.1
+
+
+originalPaths=list(paths.list_images(INPUT_DATASET))
+random.seed(7)
+random.shuffle(originalPaths)
+
+index=int(len(originalPaths)*TRAIN_SPLIT)
+trainPaths=originalPaths[:index]
+testPaths=originalPaths[index:]
+
+index=int(len(trainPaths)*VAL_SPLIT)
+valPaths=trainPaths[:index]
+trainPaths=trainPaths[index:]
+
+datasets=[("training", trainPaths, TRAIN_PATH),
+          ("validation", valPaths, VAL_PATH),
+          ("testing", testPaths, TEST_PATH)
+]
+
+for (setType, originalPaths, basePath) in datasets:
+        print(f'Building {setType} set')
+
+        if not os.path.exists(basePath):
+                print(f'Building directory {basePath}')
+                os.makedirs(basePath)
+
+        for path in originalPaths:
+                file=path.split(os.path.sep)[-1]
+                label=file[-5:-4]
+
+                labelPath=os.path.sep.join([basePath,label])
+                if not os.path.exists(labelPath):
+                        print(f'Building directory {labelPath}')
+                        os.makedirs(labelPath)
+
+                newPath=os.path.sep.join([labelPath, file])
+                shutil.copy2(path, newPath)

@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Jun 12 15:57:18 2022
+
+@author: ARNON
+"""
 import os
 from tensorflow.keras import Sequential
 from tensorflow import keras
-from tensorflow.keras.layers import Dense, Flatten, Conv2D
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Dropout, BatchNormalization
 from tensorflow.keras.models import load_model
 from tkinter import filedialog
 import matplotlib.pyplot as plt
@@ -9,6 +15,8 @@ from data_handler import Datahandler
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 import cv2
+#from keras.utils.vis_utils import plot_model
+
 #import numba  # We added these two lines for a 500x speedup
 
 
@@ -17,16 +25,15 @@ import cv2
 
 class NN:
     def __init__(self, data_handler):
-        self.model = None
-        self.last_history = None
+        self.model = None  # The keras model
+        self.last_history = None  # The history of the last training session
 
-        self.data_handler = data_handler
+        self.data_handler = data_handler  # The data handler
 
 #    @numba.jit    # We added these two lines for a 500x speedup
     def train(self) -> None:
         """
         trains the model, shows and shows 2 graphs for the accuracy and the loss of the model
-
         :return: None
         """
 
@@ -68,7 +75,6 @@ class NN:
     def test(self) -> None:
         """
         run test on model accuracy and loss
-
         :return: None
         """
         vis_dir = Datahandler.ask_empty_directory('Choose the visualized test directory')
@@ -118,7 +124,11 @@ class NN:
             plt.show()
     '''
 
-    def save_model(self):
+    def save_model(self) -> None :
+        """
+        This function is responsible on saving the trained model,
+        saves the h5 file with the name that we got from the user.
+        """
         save_name = filedialog.asksaveasfilename(initialdir=os.getcwd(),
                                                  filetypes=(('Keras model File (.h5)', '*.h5'),),
                                                  defaultextension=".h5")
@@ -126,7 +136,76 @@ class NN:
             self.model.save(save_name)
             print('Saved model to: ' + save_name)
 
-    def load_default_model(self):
+    def load_default_model(self) -> None :
+        """
+        the default model if the user does not want to use 
+        the pretrained model
+        
+        """
+           
+        self.model = Sequential()
+        self.model.add(Conv2D(32, (3, 3), padding = 'same', activation = 'relu',
+                              input_shape = (50, 50, 3)))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D(pool_size=(3, 3)))
+        self.model.add(Dropout(0.25))
+        self.model.add(Conv2D(16, (3, 3), padding="same", activation="relu"))
+        self.model.add(MaxPool2D(pool_size=(2, 2)))
+
+        self.model.add(Conv2D(16, (3, 3), padding="same", activation="relu"))
+        self.model.add(MaxPool2D(pool_size=(2, 2)))
+
+        self.model.add(Conv2D(32, (3, 3), padding="same", activation="relu"))
+        self.model.add(MaxPool2D(pool_size=(2, 2)))
+        
+        self.model.add(Flatten())
+        self.model.add(Dense(2, activation='softmax'))
+        adam = keras.optimizers.Adam(learning_rate=0.0001)
+        self.model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+        self.model.summary()
+        #plot_model(self.model, to_file= 'model_plot.png' , show_layer_names=True)
+        
+        
+        
+        '''
+        self.model = Sequential()
+
+        self.model.add(Conv2D(32, (3, 3), padding = 'same', activation = 'relu', input_shape = (50, 50, 3)))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D(pool_size=(3, 3)))
+        self.model.add(Dropout(0.25))
+        
+        self.model.add(Conv2D(64, (3, 3), padding = 'same', activation = 'relu'))
+        self.model.add(BatchNormalization())
+        
+        self.model.add(Conv2D(64, (3, 3), padding = 'same', activation = 'relu'))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D(pool_size=(2, 2)))
+        self.model.add(Dropout(0.25))
+        
+        self.model.add(Conv2D(128, (3, 3), padding = 'same', activation = 'relu'))
+        self.model.add(BatchNormalization())
+
+        self.model.add(Conv2D(64, (3, 3), padding = 'same', activation = 'relu'))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPool2D(pool_size=(2, 2)))
+        self.model.add(Dropout(0.25))
+        
+        self.model.add(Flatten())
+        self.model.add(Dense(1024, activation='relu'))
+        self.model.add(BatchNormalization())
+        self.model.add(Dropout(0.25))
+        
+        self.model.add(Dense(2, activation='sigmoid'))
+        
+        
+        Adam = keras.optimizers.Adam(learning_rate = 0.0001)
+        self.model.compile(loss = 'binary_crossentropy', optimizer = Adam, metrics = ['accuracy'])
+        
+        self.model.summary()
+        '''
+     
+        '''
         self.model = Sequential()
         # self.model.add(Conv2D(filters=64,kernel_size=3,input_shape=(50,50,3),activation='relu')) # Changed kernel size to 3x3
         self.model.add(
@@ -141,7 +220,7 @@ class NN:
         self.model.add(Dense(2, activation='softmax'))
         adam = keras.optimizers.Adam(learning_rate=0.001)
         self.model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
-        '''
+        
         self.model.add(MaxPool2D(pool_size=(2,2)))
         self.model.add(Dropout(0.25))
         self.model.add(Conv2D(filters=32,kernel_size=(3,3),activation='relu')) # Changed kernel size to 3x3
@@ -153,7 +232,14 @@ class NN:
         self.model.summary()
         '''
 
-    def load_h5_model(self):
+    def load_h5_model(self) -> None :
+        """
+        Loading the pretrained model using the path 
+        that the user gave
+        """
         model_path = filedialog.askopenfilename(initialdir=os.getcwd(), filetypes=(('Model File', '*.h5'),),
                                                 title='Choose the pretrained model h5 file')
-        self.model = load_model(model_path)
+        self.model = load_model(model_path)        
+
+    
+    

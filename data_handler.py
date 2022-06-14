@@ -17,15 +17,20 @@ from tensorflow.keras.utils import to_categorical
 
 class Datahandler:
     def __init__(self):
-        self.extracted_dir = None
-        self.data0 = None
-        self.data1 = None
-        self.train_paths = None
-        self.test_paths = None
-        self.val_paths = None
-        self.split_dir = None
+        self.extracted_dir = None  # The directory of the extracted data
+        self.data0 = None  # The paths to the images with label 0
+        self.data1 = None  # The paths to the images with label 1
+        self.train_paths = None  # The paths to the train images
+        self.test_paths = None  # The paths to the test images
+        self.val_paths = None  # The paths to the validation images
+        self.split_dir = None  # The path to the directory of the split data
     
-    def extract_data(self):
+    def extract_data(self) -> None :
+        """
+        Extract the images from the dataset zip to an empty folder
+        The user chooses the dataset zip
+        The user chooses the empty directory
+        """
         print('Choose the archive_final zip')
         zip_file = filedialog.askopenfilename(initialdir=os.getcwd(), filetypes=(('ZIP File', '*.zip'),), title='Choose the archive_final zip')
         self.extracted_dir = Datahandler.__ask_empty_directory('Choose an empty directory for the extracted data', title='Choose an empty directory for the extracted data')
@@ -34,7 +39,11 @@ class Datahandler:
             zip_ref.extractall(self.extracted_dir)
         self.delete_corrupted()
     
-    def delete_corrupted(self):
+    def delete_corrupted(self) -> None :
+        """
+        Deletes the corrupted images from the extracted directory and
+        appends the images paths to the right data list
+        """
         print('Deleting corrupted data')
         if self.extracted_dir is None:
             self.extracted_dir = Datahandler.__ask_directory('Choose the extracted data directory', title='Choose the extracted data directory')
@@ -72,7 +81,12 @@ class Datahandler:
         print()
         self.split_data()
     
-    def split_data(self, train_size=0.7, test_size=0.2):
+    def split_data(self, train_size=0.7, test_size=0.2) -> None :
+        """
+        Split the data to train, test and validation data according to the
+        train_size and test-size arguments
+        The user chooses The empty folder to split the data in
+        """
         print(f'Splitting data to {train_size} train, {test_size} test and {1 - train_size - test_size}')
         self.split_dir = Datahandler.__ask_empty_directory('Choose the split data directory')
         
@@ -81,16 +95,16 @@ class Datahandler:
             uncorrupted_dir = Datahandler.__ask_directory('Choose the uncorrupted data directory', title='Choose the uncorrupted data directory')
             imagePatches = glob(uncorrupted_dir + r"\**\*.png" , recursive=True)
             print("imgs:"+ str(len(imagePatches)))
-            data0 = []
-            data1 = []
+            self.data0 = []
+            self.data1 = []
             
             for filename in imagePatches:
                 is0 = filename.endswith("class0.png")
                 
                 if is0:
-                    data0.append(filename)
+                    self.data0.append(filename)
                 else:
-                    data1.append(filename)
+                    self.data1.append(filename)
         
             print("Total Data:")
             print("data0: "+ str(len(self.data0)))
@@ -153,10 +167,14 @@ class Datahandler:
                 shutil.copy2(path, newPath)
         print("finished splitting the data")    
     
-    def choose_split_dir(self):
+    def choose_split_dir(self) -> None :
         self.split_dir = Datahandler.__ask_directory('Choose the split data directory', title='Choose the split data directory')
     
     def load_train(self):
+        """
+        Loads the images and labels for the training session
+        return: 2 arrays that contains the images and labels for train
+        """
         print('Loading train data')
         if self.train_paths is None:
             if self.split_dir is None:
@@ -185,6 +203,10 @@ class Datahandler:
         return x, y
     
     def load_test(self):
+        """
+        Loads the images and labels for the testing session
+        return: 2 arrays that contains the images and labels for test
+        """
         print('Loading test data')
         if self.test_paths is None:
             if self.split_dir is None:
@@ -213,6 +235,10 @@ class Datahandler:
         return x, y
     
     def load_val(self):
+        """
+        Loads the images and labels for the evaluation
+        return: 2 arrays that contains the images and labels for validation
+        """
         print('Loading validation data')
         if self.val_paths is None:
             if self.split_dir is None:
@@ -242,6 +268,13 @@ class Datahandler:
     
     @staticmethod
     def __is_corrupted(img_path):
+        """
+        Check if the image in the given path is corrupted
+        Checks if there is an error while loading and normalizing the image
+        Checks if the image shape is 50x50
+        
+        Returns True if the image is corrupted, False otherwise
+        """
         try:
             img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
             img = img / 255
@@ -261,7 +294,12 @@ class Datahandler:
            
     @staticmethod
     def __ask_directory(message='', **kwargs):
-        if not message == 0:
+        """
+        Ask the user to choose a directory
+        message: The message to send when asking for a directory
+        return: the directory that the use choose
+        """
+        if not message == '':
             print(message)
         dire = filedialog.askdirectory(initialdir=os.getcwd(), **kwargs)
         while dire == '':
@@ -270,6 +308,11 @@ class Datahandler:
     
     @staticmethod
     def ask_empty_directory(message, **kwargs):
+        """
+        Ask the user to choose an empty directory
+        message: The message to send when asking for a directory
+        return: the empty directory that the use choose
+        """
         dire = Datahandler.__ask_directory(message, **kwargs)
         while not len(os.listdir(dire)) == 0:
             dire = Datahandler.__ask_directory(message, **kwargs)

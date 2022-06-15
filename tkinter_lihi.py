@@ -26,13 +26,11 @@ class Tkinter_Lihi:
         tk.Button(self.window, text='Load from zip', command=lambda: [self.data_handler.extract_data(), self.second_menu()],
                   background='#42eff5').pack(anchor='nw', padx=40, pady=50)
         tk.Button(self.window, text='Load from extracted zip',
-                  command=lambda: [self.data_handler.delete_corrupted(), self.second_menu()]).pack(anchor='nw', padx=40,
-                                                                                               pady=50)
-        tk.Button(self.window, text='Load from fixed data',
-                  command=lambda: [self.data_handler.split_data(), self.second_menu()]).pack(anchor='nw', padx=40, pady=50)
+                  command=lambda: [self.data_handler.delete_corrupted(), self.second_menu()],
+                  background='red').pack(anchor='nw', padx=40, pady=50)
         tk.Button(self.window, text='Load from split data',
-                  command=lambda: [self.data_handler.choose_split_dir(), self.second_menu()]).pack(anchor='nw', padx=40,
-                                                                                               pady=50)
+                  command=lambda: [self.data_handler.choose_split_dir(), self.second_menu()], 
+                  background='yellow').pack(anchor='nw', padx=40, pady=50)
 
         self.window.mainloop()
 
@@ -67,6 +65,5 @@ class Tkinter_Lihi:
         tk.Button(self.window, text='save trained model', command=self.nn.save_model).pack(anchor='nw', padx=40,
                                                                                            pady=50)
         tk.Button(self.window, text='Back', command=self.second_menu).pack(anchor='nw', padx=40, pady=50)
-
         self.window.mainloop()
     

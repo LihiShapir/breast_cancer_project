@@ -7,6 +7,7 @@ Created on Sun Jun 12 15:57:18 2022
 import os
 from tensorflow.keras import Sequential
 from tensorflow import keras
+
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Dropout, BatchNormalization
 from tensorflow.keras.models import load_model
 from tkinter import filedialog
@@ -142,7 +143,46 @@ class NN:
         the pretrained model
         
         """
-           
+        """
+        self.model = Sequential()
+        self.model.add(Conv2D(16, (3, 3), 
+                     activation='relu', 
+                     kernel_initializer='he_uniform', 
+                     input_shape=(50, 50, 3)))   
+            
+        self.model.add(MaxPool2D((2, 2)))
+        
+        self.model.add(Conv2D(32, (3, 3), 
+                     activation='relu', 
+                     kernel_initializer='he_uniform'))
+            
+        self.model.add(Dropout(0.2))
+            
+        self.model.add(Conv2D(64, (3, 3), 
+                     activation='relu', 
+                     kernel_initializer='he_uniform'))
+      
+        self.model.add(Conv2D(32, (3, 3), 
+                     activation='relu', 
+                     kernel_initializer='he_uniform'))
+            
+        self.model.add(MaxPool2D((2, 2)))
+        self.model.add(Flatten())
+        
+        self.model.add(Dense(1,
+                        activation='sigmoid'))
+        	
+        Adam = keras.optimizers.Adam(learning_rate=0.01)
+        self.model.compile(optimizer=Adam, 
+                         loss='binary_crossentropy', 
+                         metrics=['accuracy'])
+        
+        return self.model
+        """
+        
+        
+        
+        
         self.model = Sequential()
         self.model.add(Conv2D(32, (3, 3), padding = 'same', activation = 'relu',
                               input_shape = (50, 50, 3)))
@@ -159,11 +199,17 @@ class NN:
         self.model.add(MaxPool2D(pool_size=(2, 2)))
         
         self.model.add(Flatten())
-        self.model.add(Dense(2, activation='softmax'))
-        adam = keras.optimizers.Adam(learning_rate=0.0001)
-        self.model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+        self.model.add(Dense(2, activation='sigmoid'))
+        #adam = keras.optimizers.Adam(learning_rate=0.0001)
+        optimizer1 = keras.optimizers.SGD(learning_rate=0.0001, momentum=0.9)
+        #model.compile(optimizer=optimizer1, loss='binary_crossentropy', 
+         #            metrics=['accuracy'])
+        self.model.compile(loss='binary_crossentropy', optimizer=optimizer1, metrics=['accuracy'])
         self.model.summary()
         #plot_model(self.model, to_file= 'model_plot.png' , show_layer_names=True)
+        
+        
+        
         
         
         
@@ -205,33 +251,21 @@ class NN:
         self.model.summary()
         '''
      
-        '''
+        """
         self.model = Sequential()
-        # self.model.add(Conv2D(filters=64,kernel_size=3,input_shape=(50,50,3),activation='relu')) # Changed kernel size to 3x3
+        self.model.add(Conv2D(filters=64,kernel_size=3,input_shape=(50,50,3),activation='relu')) # Changed kernel size to 3x3
         self.model.add(
-            Conv2D(filters=32, kernel_size=3, input_shape=(50, 50, 3), activation='relu'))  # Changed kernel size to 3x3
+            Conv2D(filters=128, kernel_size=3, input_shape=(50, 50, 3), activation='relu'))  # Changed kernel size to 3x3
         self.model.add(
             Conv2D(filters=64, kernel_size=3, input_shape=(50, 50, 3), activation='relu'))  # Changed kernel size to 3x3
         self.model.add(
             Conv2D(filters=64, kernel_size=3, input_shape=(50, 50, 3), activation='relu'))  # Changed kernel size to 3x3
         self.model.add(Conv2D(filters=128, kernel_size=3, input_shape=(50, 50, 3),
                               activation='relu'))  # Changed kernel size to 3x3
-        self.model.add(Flatten())
-        self.model.add(Dense(2, activation='softmax'))
-        adam = keras.optimizers.Adam(learning_rate=0.001)
-        self.model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
-        
-        self.model.add(MaxPool2D(pool_size=(2,2)))
         self.model.add(Dropout(0.25))
-        self.model.add(Conv2D(filters=32,kernel_size=(3,3),activation='relu')) # Changed kernel size to 3x3
-        self.model.add(MaxPool2D(pool_size=(2,2)))
-        self.model.add(Dropout(0.25))
-        self.model.add(Flatten())
-        self.model.add(Dense(64,activation='relu'))
-        self.model.compile(loss = 'binary_crossentropy', optimizer ='adam', metrics= ['accuracy'])        
         self.model.summary()
-        '''
-
+        
+        """
     def load_h5_model(self) -> None :
         """
         Loading the pretrained model using the path 

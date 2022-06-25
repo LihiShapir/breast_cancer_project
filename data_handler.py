@@ -34,7 +34,7 @@ class Datahandler:
         print('Choose the archive_final zip')
         zip_file = filedialog.askopenfilename(initialdir=os.getcwd(), filetypes=(('ZIP File', '*.zip'),), title='Choose the archive_final zip')
         self.extracted_dir = Datahandler.__ask_empty_directory('Choose an empty directory for the extracted data', title='Choose an empty directory for the extracted data')
-        
+        print("extracting the data please wait for the next action")
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(self.extracted_dir)
         self.delete_corrupted()

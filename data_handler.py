@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jun  8 12:04:24 2022
+Lihi Shapir- Breast cancer project
 
-@author: ARNON
 """
 
 from glob import glob
@@ -14,6 +13,7 @@ from tkinter import filedialog
 import zipfile
 import numpy as np
 from tensorflow.keras.utils import to_categorical
+
 
 class Datahandler:
     def __init__(self):
@@ -89,7 +89,7 @@ class Datahandler:
         """
         print(f'Splitting data to {train_size} train, {test_size} test and {1 - train_size - test_size}')
         self.split_dir = Datahandler.__ask_empty_directory('Choose the split data directory')
-        
+        """
         if self.data0 is None:
             # imagePatches = glob(os.path.join(path, r"\**\*.png") , recursive=True)
             uncorrupted_dir = Datahandler.__ask_directory('Choose the uncorrupted data directory', title='Choose the uncorrupted data directory')
@@ -110,7 +110,7 @@ class Datahandler:
             print("data0: "+ str(len(self.data0)))
             print("data1: "+ str(len(self.data1)))
             print()
-            
+            """
         sampled_data0 = random.sample(self.data0, min(len(self.data0), len(self.data1)))        
         sampled_data1 = random.sample(self.data1, min(len(self.data0), len(self.data1)))
         
@@ -187,7 +187,7 @@ class Datahandler:
         count = 1
         for image_path in self.train_paths:
             img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-            img = img / 255
+            img = img / 255 
             label=int(image_path[-5:-4])
             
             images_list.append(img)

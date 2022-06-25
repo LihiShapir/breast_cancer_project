@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun 12 12:11:26 2022
-
-@author: ARNON
+Lihi Shapir- Breast cancer project
 """
 
 from data_handler import Datahandler

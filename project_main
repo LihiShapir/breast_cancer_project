@@ -1,9 +1,0 @@
-
-from tkinter_lihi import Tkinter_Lihi
-
-def main():
-    tkinter_lihi = Tkinter_Lihi()
-    tkinter_lihi.first_menu()
-    
-if __name__== '__main__':
-    main()

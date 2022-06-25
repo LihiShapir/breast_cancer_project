@@ -286,7 +286,7 @@ class Datahandler:
         return dire
     
     @staticmethod
-    def ask_empty_directory(message, **kwargs):
+    def __ask_empty_directory(message, **kwargs):
         """
         Ask the user to choose an empty directory
         message: The message to send when asking for a directory

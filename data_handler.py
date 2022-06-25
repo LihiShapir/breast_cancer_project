@@ -88,29 +88,8 @@ class Datahandler:
         The user chooses The empty folder to split the data in
         """
         print(f'Splitting data to {train_size} train, {test_size} test and {1 - train_size - test_size}')
-        self.split_dir = Datahandler.__ask_empty_directory('Choose the split data directory')
-        """
-        if self.data0 is None:
-            # imagePatches = glob(os.path.join(path, r"\**\*.png") , recursive=True)
-            uncorrupted_dir = Datahandler.__ask_directory('Choose the uncorrupted data directory', title='Choose the uncorrupted data directory')
-            imagePatches = glob(uncorrupted_dir + r"\**\*.png" , recursive=True)
-            print("imgs:"+ str(len(imagePatches)))
-            self.data0 = []
-            self.data1 = []
-            
-            for filename in imagePatches:
-                is0 = filename.endswith("class0.png")
-                
-                if is0:
-                    self.data0.append(filename)
-                else:
-                    self.data1.append(filename)
-        
-            print("Total Data:")
-            print("data0: "+ str(len(self.data0)))
-            print("data1: "+ str(len(self.data1)))
-            print()
-            """
+        self.split_dir = Datahandler.__ask_empty_directory('Choose an empty directory for the split data ')
+       
         sampled_data0 = random.sample(self.data0, min(len(self.data0), len(self.data1)))        
         sampled_data1 = random.sample(self.data1, min(len(self.data0), len(self.data1)))
         

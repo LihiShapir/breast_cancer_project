@@ -55,14 +55,7 @@ class NN:
         plt.show()
 
         print("finished training the model choose your next action")
-        '''
-        fig, (ax1, ax2) = plt.subplots(2)
-        ax1.plot(loss, label='loss')
-        ax1.plot(accuracy, label='accuracy')
-        ax2.plot(val_loss, label='val_loss')
-        ax2.plot(val_accuracy, label='val_accuracy')
-        plt.show()
-        '''
+       
 
     def test(self) -> None:
         """
@@ -135,7 +128,7 @@ class NN:
         self.model.add(Flatten())
         self.model.add(Dense(2, activation='softmax'))
         adam = keras.optimizers.Adam(learning_rate=0.0001)
-        self.model.compile(loss='binary_crossentropy', optimizer= adam, metrics=['accuracy'])
+        self.model.compile(loss='categorical_crossentropy', optimizer= adam, metrics=['accuracy'])
         self.model.summary()
 
         

@@ -33,9 +33,10 @@ class Datahandler:
         """
         print('Choose the archive_final zip')
         zip_file = filedialog.askopenfilename(initialdir=os.getcwd(), filetypes=(('ZIP File', '*.zip'),), title='Choose the archive_final zip')
-        self.extracted_dir = Datahandler.__ask_empty_directory('Choose an empty directory for the extracted data', title='Choose an empty directory for the extracted data')
+        self.extracted_dir = Datahandler.ask_empty_directory('Choose an empty directory for the extracted data', title='Choose an empty directory for the extracted data')
         print("extracting the data please wait for the next action")
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
+        
+        with zipfile.ZipFile(zip_file , "r") as zip_ref:
             zip_ref.extractall(self.extracted_dir)
         self.delete_corrupted()
     
@@ -46,7 +47,7 @@ class Datahandler:
         """
         print('Deleting corrupted data')
         if self.extracted_dir is None:
-            self.extracted_dir = Datahandler.__ask_directory('Choose the extracted data directory', title='Choose the extracted data directory')
+            self.extracted_dir = Datahandler.ask_directory('Choose the extracted data directory', title='Choose the extracted data directory')
         imagePatches = glob(self.extracted_dir + r"\**\*.png" , recursive=True)
         print("imgs:"+ str(len(imagePatches)))
         self.data0 = []
@@ -88,7 +89,7 @@ class Datahandler:
         The user chooses The empty folder to split the data in
         """
         print(f'Splitting data to {train_size} train, {test_size} test and {1 - train_size - test_size}')
-        self.split_dir = Datahandler.__ask_empty_directory('Choose an empty directory for the split data ')
+        self.split_dir = Datahandler.ask_empty_directory('Choose an empty directory for the split data ')
        
         sampled_data0 = random.sample(self.data0, min(len(self.data0), len(self.data1)))        
         sampled_data1 = random.sample(self.data1, min(len(self.data0), len(self.data1)))
@@ -147,7 +148,7 @@ class Datahandler:
         print("finished splitting the data")    
     
     def choose_split_dir(self) -> None :
-        self.split_dir = Datahandler.__ask_directory('Choose the split data directory', title='Choose the split data directory')
+        self.split_dir = Datahandler.ask_directory('Choose the split data directory', title='Choose the split data directory')
     
     def load_train(self):
         """
@@ -157,7 +158,7 @@ class Datahandler:
         print('Loading train data')
         if self.train_paths is None:
             if self.split_dir is None:
-                self.split_dir = Datahandler.__ask_directory('Choose the split data directory', title='Choose the split data directory')
+                self.split_dir = Datahandler.ask_directory('Choose the split data directory', title='Choose the split data directory')
             TRAIN_PATH = os.path.sep.join([self.split_dir, "training"])
             self.train_paths = glob(TRAIN_PATH + r"\**\*.png" , recursive=True)
         
@@ -189,7 +190,7 @@ class Datahandler:
         print('Loading test data')
         if self.test_paths is None:
             if self.split_dir is None:
-                self.split_dir = Datahandler.__ask_directory('Choose the split data directory', title='Choose the split data directory')
+                self.split_dir = Datahandler.ask_directory('Choose the split data directory', title='Choose the split data directory')
             PATH = os.path.sep.join([self.split_dir, "testing"])
             self.test_paths = glob(PATH + r"\**\*.png" , recursive=True)
         
@@ -272,7 +273,7 @@ class Datahandler:
         return False
            
     @staticmethod
-    def __ask_directory(message='', **kwargs):
+    def ask_directory(message='', **kwargs):
         """
         Ask the user to choose a directory
         message: The message to send when asking for a directory
@@ -286,14 +287,14 @@ class Datahandler:
         return dire
     
     @staticmethod
-    def __ask_empty_directory(message, **kwargs):
+    def ask_empty_directory(message, **kwargs):
         """
         Ask the user to choose an empty directory
         message: The message to send when asking for a directory
         return: the empty directory that the use choose
         """
-        dire = Datahandler.__ask_directory(message, **kwargs)
+        dire = Datahandler.ask_directory(message, **kwargs)
         while not len(os.listdir(dire)) == 0:
-            dire = Datahandler.__ask_directory(message, **kwargs)
+            dire = Datahandler.ask_directory(message, **kwargs)
         return dire
     

@@ -222,7 +222,7 @@ class Datahandler:
         print('Loading validation data')
         if self.val_paths is None:
             if self.split_dir is None:
-                self.split_dir = Datahandler.__ask_directory('Choose the split data directory', title='Choose the split data directory')
+                self.split_dir = Datahandler.ask_directory('Choose the split data directory', title='Choose the split data directory')
             PATH = os.path.sep.join([self.split_dir, "validation"])
             self.val_paths = glob(PATH + r"\**\*.png" , recursive=True)
         

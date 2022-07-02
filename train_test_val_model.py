@@ -128,7 +128,7 @@ class NN:
         self.model.add(Flatten())
         self.model.add(Dense(2, activation='softmax'))
         adam = keras.optimizers.Adam(learning_rate=0.0001)
-        self.model.compile(loss='categorical_crossentropy', optimizer= adam, metrics=['accuracy'])
+        self.model.compile(loss='binary_crossentropy', optimizer= adam, metrics=['accuracy'])
         self.model.summary()
 
         
